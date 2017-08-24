@@ -46,7 +46,8 @@ class WebSocketHandler extends BaseHandler
         //     return response('');
         // });
         // auth user
-        $user = auth()->guard('websocket')->user();
+        // $user = auth()->guard('websocket')->user();
+        $user = null;
         if ($user) {
             // cache user data to swoole table
             app('swoole.table')->users->set($fd, ['id' => $user->id, 'name' => $user->name]);
