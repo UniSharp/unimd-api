@@ -51,7 +51,7 @@ class BaseHandler
         try {
             $laravelCookies = $this->decryptCookies($request->cookie ?? []);
         } catch (DecryptException $e) {
-            app('output')->writeln('cookie decryption error');
+            uni_output('cookie decryption error');
         }
 
         return Request::create(
@@ -97,8 +97,8 @@ class BaseHandler
 
     protected function syncDiff($server, $fd)
     {
-        $note_id = app('swoole.table')->users->get($fd)['room_id'];
-        $diff = app('swoole.table')->diffs->get($note_id);
+        $note_id = uni_table('users')->get($fd)['room_id'];
+        $diff = uni_table('diffs')->get($note_id);
         $diffResult = [
             'action' => 'getDiff',
             'message' => $diff['content']

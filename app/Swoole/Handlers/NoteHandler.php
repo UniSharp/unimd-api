@@ -14,7 +14,7 @@ class NoteHandler extends BaseHandler
     public function get($server, $data, $fd)
     {
         // cache room_id to swoole table
-        app('swoole.table')->users->set($fd, [
+        uni_table('users')->set($fd, [
             'room_id' => $data->note_id
         ]);
         // get note
@@ -37,7 +37,7 @@ class NoteHandler extends BaseHandler
 
     public function change($server, $data, $fd)
     {
-        $room_id = app('swoole.table')->users->get($fd)['room_id'];
+        $room_id = uni_table('users')->get($fd)['room_id'];
         $result = [
             'action' => 'changeNote',
             'message' => $data->message
@@ -48,8 +48,8 @@ class NoteHandler extends BaseHandler
     public function diff($server, $data, $fd)
     {
         // cache note diff to swoole table
-        $room_id = app('swoole.table')->users->get($fd)['room_id'];
-        app('swoole.table')->diffs->set($room_id, [
+        $room_id = uni_table('users')->get($fd)['room_id'];
+        uni_table('diffs')->set($room_id, [
             'id' => $fd,
             'content' => $data->message
         ]);

@@ -21,7 +21,7 @@ class WebSocketHandler extends BaseHandler
 
     public function onStart(Server $server)
     {
-        app('output')->writeln("websocket server started: <ws://{$server->host}:$server->port>");
+        uni_output("websocket server started: <ws://{$server->host}:$server->port>");
         // clean rooms while unexpected server shutdown
         $this->cleanRooms($server);
     }
@@ -39,7 +39,7 @@ class WebSocketHandler extends BaseHandler
     public function onOpen(Server $server, $request)
     {
         $fd = $request->fd;
-        app('output')->writeln("server: handshake succeeed with client-{$fd}");
+        uni_output("server: handshake succeeed with client-{$fd}");
         // tranform request
         // $request = $this->makeRequest($request);
         // $request = $this->sessionMiddleware->handle($request, function ($pipe) {
@@ -50,8 +50,8 @@ class WebSocketHandler extends BaseHandler
         $user = null;
         if ($user) {
             // cache user data to swoole table
-            app('swoole.table')->users->set($fd, ['id' => $user->id, 'name' => $user->name]);
-            app('output')->writeln("user `{$user->name}`(id: {$user->id}) authenticated"); 
+            uni_table('users')->set($fd, ['id' => $user->id, 'name' => $user->name]);
+            uni_output("user `{$user->name}`(id: {$user->id}) authenticated"); 
         }
     }
 
@@ -62,12 +62,12 @@ class WebSocketHandler extends BaseHandler
 
         // filter illegal actions
         if (!isset($data->action)) {
-            app('output')->writeln("illegal request from client-{$frame->fd} has been denied");
+            uni_output("illegal request from client-{$frame->fd} has been denied");
             return false;
         }
         $action = trim($data->action);
         if (!array_key_exists($action, $this->dispatchers)) {
-            app('output')->writeln("illegal action `{$action}` from client-{$frame->fd} has been denied");
+            uni_output("illegal action `{$action}` from client-{$frame->fd} has been denied");
             return false;
         }
         // dispatch by action
@@ -80,7 +80,7 @@ class WebSocketHandler extends BaseHandler
         // filter illegal actions
         $action = trim($data['action']);
         if (!array_key_exists($action, $this->dispatchers)) {
-            app('output')->writeln("illegal task action `{$action}` from client-{$frame->fd} has been denied");
+            uni_output("illegal task action `{$action}` from client-{$frame->fd} has been denied");
             return false;
         }
         // dispatch by action
@@ -95,11 +95,11 @@ class WebSocketHandler extends BaseHandler
 
     public function onClose(Server $server, $fd)
     {
-        app('output')->writeln("client-{$fd} is closed");
+        uni_output("client-{$fd} is closed");
         // remove user from room
-        $user = app('swoole.table')->users->get($fd);
+        $user = uni_table('users')->get($fd);
         $this->exitRoom($server, $user['room_id'], $fd);
         // remove user from online users
-        app('swoole.table')->users->del($fd);
+        uni_table('users')->del($fd);
     }
 }
