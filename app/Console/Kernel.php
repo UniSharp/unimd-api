@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        \Laravelista\LumenVendorPublish\VendorPublishCommand::class,
         \App\Console\Commands\Serve::class,
         \App\Console\Commands\SocketServe::class,
     ];

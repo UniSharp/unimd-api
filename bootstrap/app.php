@@ -63,9 +63,11 @@ $app->singleton(
 //    App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+    'jwt.auth' => Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+    'jwt.refresh' => Tymon\JWTAuth\Middleware\RefreshToken::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -83,9 +85,17 @@ $app->singleton(
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(App\Providers\SwooleServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(Irazasyed\JwtAuthGuard\JwtAuthGuardServiceProvider::class);
+
+$app->alias('cache', 'Illuminate\Cache\CacheManager');
+$app->alias('auth', 'Illuminate\Auth\AuthManager');
 
 // Load configuration file
 $app->configure('swoole');
+$app->configure('auth');
+$app->configure('jwt');
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -99,6 +109,7 @@ $app->configure('swoole');
 
 $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../routes/web.php';
+    require __DIR__.'/../routes/api.php';
 });
 
 return $app;
