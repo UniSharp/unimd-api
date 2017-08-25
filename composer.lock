@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c0946ff94374267833a0ac398cae25b8",
-    "content-hash": "58031762fbfcee05a75f985171fb39fc",
+    "hash": "7b5885df8abd6faf775406cdb72a1e83",
+    "content-hash": "edb3c98171394160b5eed3bba147a7c8",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1239,16 +1239,16 @@
         },
         {
             "name": "irazasyed/jwt-auth-guard",
-            "version": "v1.0.4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/irazasyed/jwt-auth-guard.git",
-                "reference": "efb6195b33bf4221c0553a081a6e3b2a476d2070"
+                "reference": "b46e134a5b88b772f8061c4a03192f94b6834bb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/irazasyed/jwt-auth-guard/zipball/efb6195b33bf4221c0553a081a6e3b2a476d2070",
-                "reference": "efb6195b33bf4221c0553a081a6e3b2a476d2070",
+                "url": "https://api.github.com/repos/irazasyed/jwt-auth-guard/zipball/b46e134a5b88b772f8061c4a03192f94b6834bb4",
+                "reference": "b46e134a5b88b772f8061c4a03192f94b6834bb4",
                 "shasum": ""
             },
             "require": {
@@ -1296,7 +1296,7 @@
                 "laravel jwt auth guard",
                 "lumen jwt auth guard"
             ],
-            "time": "2016-04-27 15:47:45"
+            "time": "2017-07-26 20:12:07"
         },
         {
             "name": "laravel/lumen-framework",
@@ -4265,7 +4265,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "irazasyed/jwt-auth-guard": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

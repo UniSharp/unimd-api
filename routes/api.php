@@ -13,17 +13,12 @@
 
 $app->group(['prefix' => 'api/v1'], function ($app) {
     $app->get('/', function () use ($app) {
-        // $user = \App\User::first();
-        // $token = \JWTAuth::fromUser($user);
-        // dd($token);
-        // $user = \JWTAuth::parseToken()->toUser();
-        // dd($user);
         return $app->version();
     });
 
-    $app->group(['middleware' => 'auth:api'], function () use ($app) {
-        $app->group(['prefix' => '/prefix'], function () use ($app) {
-            dd('success');
+    $app->group(['prefix' => '/prefix', 'middleware' => 'auth:api'], function () use ($app) {
+        $app->get('/', function () use ($app) {
+            dd(auth()->user());
         });
     });
 });
