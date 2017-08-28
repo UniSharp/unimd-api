@@ -44,8 +44,7 @@ class WebSocketHandler extends BaseHandler
         // tranform request
         $request = SwooleRequest::capture($request);
         // auth user
-        auth()->guard('websocket')->setRequest($request);
-        $user = auth()->guard('websocket')->user();
+        $user = auth()->guard('websocket')->setRequest($request)->user();
         if ($user) {
             // cache user data to swoole table
             uni_table('users')->set($fd, ['id' => $user->id, 'name' => $user->name]);

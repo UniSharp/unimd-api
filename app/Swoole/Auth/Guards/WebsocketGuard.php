@@ -13,10 +13,15 @@ class WebsocketGuard extends JwtAuthGuard
      */
     public function user()
     {
+        // reset user
+        $this->user = null;
+        $this->jwt->unsetToken();
+
         if ($this->jwt->setRequest($this->request)->getToken() && $this->jwt->check()) {
             $id = $this->jwt->payload()->get('sub');
-
-            return $this->user = $this->provider->retrieveById($id);
+            $this->user = $this->provider->retrieveById($id);
         }
+
+        return $this->user;
     }
 }
