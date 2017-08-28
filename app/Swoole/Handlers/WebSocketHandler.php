@@ -5,6 +5,7 @@ namespace App\Swoole\Handlers;
 use Swoole\WebSocket\Server;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Redis;
+use App\Swoole\Foundation\Request as SwooleRequest;
 
 class WebSocketHandler extends BaseHandler
 {
@@ -41,13 +42,10 @@ class WebSocketHandler extends BaseHandler
         $fd = $request->fd;
         uni_output("server: handshake succeeed with client-{$fd}");
         // tranform request
-        // $request = $this->makeRequest($request);
-        // $request = $this->sessionMiddleware->handle($request, function ($pipe) {
-        //     return response('');
-        // });
+        $request = SwooleRequest::capture($request);
         // auth user
-        // $user = auth()->guard('websocket')->user();
-        $user = null;
+        auth()->guard('websocket')->setRequest($request);
+        $user = auth()->guard('websocket')->user();
         if ($user) {
             // cache user data to swoole table
             uni_table('users')->set($fd, ['id' => $user->id, 'name' => $user->name]);

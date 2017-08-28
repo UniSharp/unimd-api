@@ -36,6 +36,10 @@ return [
             'driver' => 'jwt-auth',
             'provider' => 'users',
         ],
+        'websocket' => [
+            'driver' => 'websocket',
+            'provider' => 'users',
+        ]
     ],
     /*
     |--------------------------------------------------------------------------

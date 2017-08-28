@@ -33,38 +33,6 @@ class BaseHandler
         $this->broadcast($server, null, 0, null, 0x9);
     }
 
-    protected function decryptCookies($cookies = [])
-    {
-        $result = [];
-        foreach ($cookies as $key => $value) {
-            $result[$key] = \Crypt::decrypt($value);
-        }
-        return $result;
-    }
-
-    protected function makeRequest(\Swoole\Http\Request $request)
-    {
-        // decrypt laravel cookies
-        $laravelCookies = collect($request->cookie ?? [])
-            ->only(['XSRF-TOKEN', 'laravel_session'])
-            ->toArray();
-        try {
-            $laravelCookies = $this->decryptCookies($request->cookie ?? []);
-        } catch (DecryptException $e) {
-            uni_output('cookie decryption error');
-        }
-
-        return Request::create(
-            $uri = '/',
-            $method = 'get',
-            $parameters = [],
-            $laravelCookies,
-            $files = [],
-            $server = $request->server,
-            $content = ''
-        );
-    }
-
     protected function joinRoom(Server $server, $room_id, $fd)
     {
         $server->task([

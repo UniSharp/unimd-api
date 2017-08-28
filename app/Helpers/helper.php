@@ -59,6 +59,9 @@ if ( ! function_exists('config_path'))
 if (! function_exists('uni_output')) {
     function uni_output($content)
     {
+        if (is_array($content) || is_object($content)) {
+            $content = json_encode($content);
+        }
         app('output')->writeln($content);
     }
 }
