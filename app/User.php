@@ -31,6 +31,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password', 'remember_token',
     ];
 
+    public static $createRules = [
+        'name' => 'required',
+        'email' => 'required|email|unique:users',
+        'password' => 'required'
+    ];
+
     /**
      * @return mixed
      */
