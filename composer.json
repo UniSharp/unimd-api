@@ -12,7 +12,8 @@
         "predis/predis": "^1.1",
         "tymon/jwt-auth": "^1.0@dev",
         "laravelista/lumen-vendor-publish": "^2.0",
-        "illuminate/routing": "^5.4"
+        "illuminate/routing": "^5.4",
+        "yetanotherape/diff-match-patch": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

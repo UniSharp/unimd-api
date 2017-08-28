@@ -53,5 +53,15 @@ class NoteHandler extends BaseHandler
             'id' => $fd,
             'content' => $data->message
         ]);
+        // merge diff
+        if (strlen($data->message) > 500) {
+            $server->task([
+                'action' => 'mergeDiff',
+                'data' => [
+                    'note_id' => $room_id,
+                    'diff' => $data->message
+                ]
+            ]);
+        }
     }
 }

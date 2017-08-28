@@ -12,12 +12,14 @@ class WebSocketHandler extends BaseHandler
     protected $dispatchers;
     protected $heartbeatInterval;
     protected $heartbeatPush;
+    protected $maxSyncChars;
 
     public function __construct()
     {
         $this->dispatchers = config('swoole.dispatchers');
         $this->heartbeatInterval = config('swoole.websocket.heartbeat_server_interval') * 1000;
         $this->heartbeatPush = config('swoole.websocket.heartbeat_push');
+        $this->maxSyncChars = config('swoole.websocket.maxSyncChars');
     }
 
     public function onStart(Server $server)

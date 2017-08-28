@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use App\Swoole\WebSocket;
 use App\Swoole\Table;
 use Swoole\WebSocket\Server;
+use DiffMatchPatch\DiffMatchPatch;
 
 class SwooleServiceProvider extends ServiceProvider
 {
@@ -29,6 +30,10 @@ class SwooleServiceProvider extends ServiceProvider
 
         $this->app->singleton('output', function ($app) {
             return $app->make(ConsoleOutput::class);
+        });
+
+        $this->app->singleton('dmp', function ($app) {
+            return new DiffMatchPatch;
         });
     }
 }
