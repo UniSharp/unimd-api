@@ -10,7 +10,7 @@ use Illuminate\Contracts\Encryption\DecryptException;
 
 class BaseHandler
 {
-    public function __contruct()
+    public function __construct()
     {
         //
     }

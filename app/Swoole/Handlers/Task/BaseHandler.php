@@ -4,9 +4,9 @@ namespace App\Swoole\Handlers\Task;
 
 use Illuminate\Support\Facades\Redis;
 
-class PushHandler
+class BaseHandler
 {
-    public function __contruct()
+    public function __construct()
     {
         //
     }
@@ -14,14 +14,17 @@ class PushHandler
     public function broadcast($server, $data)
     {
         $connections = $server->connections;
+        $opcode = $data['opcode'] ?? 1;
+        $sender = $data['sender'] ?? 0;
+        $message = is_array($data['message']) ? json_encode($data['message']) : $data['message'];
 
         if (!is_null($data['room_id'])) {
             $connections = Redis::smembers(RoomHandler::PREFIX . $data['room_id']);
         }
 
         foreach($connections as $fd) {
-            if ($data['sender'] !== (integer) $fd) {
-                $server->push($fd, $data['message'], $data['opcode']);
+            if ($sender !== (integer) $fd) {
+                $server->push($fd, $message, $opcode);
             }
         }
     }

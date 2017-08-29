@@ -8,7 +8,7 @@ class RoomHandler
 {
     const PREFIX = 'swoole:room:';
 
-    public function __contruct()
+    public function __construct()
     {
         //
     }

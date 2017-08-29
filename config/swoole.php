@@ -8,7 +8,7 @@ return [
         'heartbeat_server_interval' => env('WS_HARTBEAT_SERVER_INTERVAL', 30),
         'max_online_users' => env('WS_MAX_ONLINE_USERS', 2048),
         'max_online_notes' => env('WS_MAX_ONLINE_NOTES', 1024),
-        'max_sync_chars' => env('WS_MAX_SYNC_CHARS', 500),
+        'max_sync_chars' => env('WS_MAX_SYNC_CHARS', 700),
     ],
     'settings' => [
         'heartbeat_check_interval' => env('WS_HARTBEAT_INTERVAL', 60),
@@ -16,7 +16,7 @@ return [
         'task_worker_num' => env('WS_TASKWORKER_NUMBER', 4),
     ],
     'dispatchers' => [
-        'broadcast' => 'App\Swoole\Handlers\Task\PushHandler@broadcast',
+        'broadcast' => 'App\Swoole\Handlers\Task\BaseHandler@broadcast',
         'joinRoom' => 'App\Swoole\Handlers\Task\RoomHandler@join',
         'exitRoom' => 'App\Swoole\Handlers\Task\RoomHandler@exit',
         'mergeDiff' => 'App\Swoole\Handlers\Task\NoteHandler@mergeDiff',

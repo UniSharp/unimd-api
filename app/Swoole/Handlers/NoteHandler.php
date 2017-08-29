@@ -2,16 +2,19 @@
 
 namespace App\Swoole\Handlers;
 
+use Swoole\WebSocket\Server;
 use App\Note;
 
 class NoteHandler extends BaseHandler
 {
+    protected $maxSyncChars;
+
     public function __construct()
     {
-        //
+        $this->maxSyncChars = config('swoole.websocket.max_sync_chars');
     }
 
-    public function get($server, $data, $fd)
+    public function get(Server $server, $data, $fd)
     {
         // cache room_id to swoole table
         uni_table('users')->set($fd, [
@@ -35,7 +38,7 @@ class NoteHandler extends BaseHandler
         $this->syncDiff($server, $fd, $data->note_id);
     }
 
-    public function change($server, $data, $fd)
+    public function change(Server $server, $data, $fd)
     {
         $room_id = uni_table('users')->get($fd)['room_id'];
         $result = [
@@ -45,19 +48,20 @@ class NoteHandler extends BaseHandler
         $this->broadcast($server, $room_id, json_encode($result), $fd);
     }
 
-    public function diff($server, $data, $fd)
+    public function diff(Server $server, $data, $fd)
     {
         // cache note diff to swoole table
         $room_id = uni_table('users')->get($fd)['room_id'];
         uni_table('diffs')->set($room_id, [
-            'id' => $fd,
             'content' => $data->message
         ]);
         // merge diff
-        if (strlen($data->message) > 500) {
+        if (strlen($data->message) > $this->maxSyncChars) {
             $server->task([
                 'action' => 'mergeDiff',
                 'data' => [
+                    'server' => $server,
+                    'sender' => $fd,
                     'note_id' => $room_id,
                     'diff' => $data->message
                 ]

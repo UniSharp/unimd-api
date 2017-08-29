@@ -4,9 +4,9 @@ namespace App\Swoole\Handlers\Task;
 
 use App\Note;
 
-class NoteHandler
+class NoteHandler extends BaseHandler
 {
-    public function __contruct()
+    public function __construct()
     {
         //
     }
@@ -19,5 +19,19 @@ class NoteHandler
         // write to database
         $note->content = $result[0];
         $note->save();
+        // clear diff
+        uni_table('diffs')->set($data['note_id'], [
+            'content' => null
+        ]);
+        // broadcast updated note
+        $result = [
+            'room_id' => $data['note_id'],
+            'sender' => $data['sender'],
+            'message' => json_encode([
+                'action' => 'updateNote',
+                'message' => $note->content
+            ])
+        ];
+        $this->broadcast($data['server'], $result);
     }
 }
