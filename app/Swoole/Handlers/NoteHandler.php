@@ -11,6 +11,7 @@ class NoteHandler extends BaseHandler
 
     public function __construct()
     {
+        // TODO: prevent reload config from io
         $this->maxSyncChars = config('swoole.websocket.max_sync_chars');
     }
 
@@ -53,7 +54,8 @@ class NoteHandler extends BaseHandler
         // cache note diff to swoole table
         $room_id = uni_table('users')->get($fd)['room_id'];
         uni_table('diffs')->set($room_id, [
-            'content' => $data->message
+            'content' => $data->message,
+            'updated_at' => time()
         ]);
         // merge diff
         if (strlen($data->message) > $this->maxSyncChars) {

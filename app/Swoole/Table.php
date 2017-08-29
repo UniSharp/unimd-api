@@ -26,8 +26,10 @@ class Table
 
     protected function initDiffs()
     {
+        // TODO: check table size and max column limit
         $this->diffs = new SwooleTable(config('swoole.websocket.max_online_notes'));
-        $this->diffs->column('content', SwooleTable::TYPE_STRING, 131072);
+        $this->diffs->column('updated_at', SwooleTable::TYPE_INT, 8);
+        $this->diffs->column('content', SwooleTable::TYPE_STRING, 65536);
         $this->diffs->create();
     }
 }

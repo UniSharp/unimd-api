@@ -21,7 +21,8 @@ class NoteHandler extends BaseHandler
         $note->save();
         // clear diff
         uni_table('diffs')->set($data['note_id'], [
-            'content' => null
+            'content' => null,
+            'updated_at' => time()
         ]);
         // broadcast updated note
         $result = [
@@ -33,5 +34,20 @@ class NoteHandler extends BaseHandler
             ])
         ];
         $this->broadcast($data['server'], $result);
+    }
+
+    public function mergeDiffs($data)
+    {
+        $now = time();
+        foreach (uni_table('diffs') as $key => $diff) {
+            if ($now - $diff['updated_at'] > 600) {
+                $this->mergeDiff([
+                    'note_id' => $key,
+                    'diff' => $diff['content'],
+                    'sender' => 0,
+                    'server' => $data['server']
+                ]);
+            }
+        }
     }
 }

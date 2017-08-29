@@ -12,12 +12,14 @@ class WebSocketHandler extends BaseHandler
     protected $dispatchers;
     protected $heartbeatInterval;
     protected $heartbeatPush;
+    protected $mergeInterval;
 
     public function __construct()
     {
         $this->dispatchers = config('swoole.dispatchers');
         $this->heartbeatInterval = config('swoole.websocket.heartbeat_server_interval') * 1000;
         $this->heartbeatPush = config('swoole.websocket.heartbeat_push');
+        $this->mergeInterval = config('swoole.websocket.merge_interval') * 1000;
     }
 
     public function onStart(Server $server)
@@ -29,10 +31,16 @@ class WebSocketHandler extends BaseHandler
 
     public function onWorkerStart(Server $server)
     {
-        // server push heartbeat
-        if ($this->heartbeatPush && $server->worker_id === 0) {
-            $server->tick($this->heartbeatInterval, function ($id) use ($server) {
-                $this->heartbeat($server);
+        if ($server->worker_id === 0) {
+            // server push heartbeat
+            if ($this->heartbeatPush) {
+                $server->tick($this->heartbeatInterval, function ($id) use ($server) {
+                    $this->heartbeat($server);
+                });
+            }
+            // launch merge worker
+            $server->tick($this->mergeInterval, function ($id) use ($server) {
+                $this->mergeDiffs($server);
             });
         }
     }

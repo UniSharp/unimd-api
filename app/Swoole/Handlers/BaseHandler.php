@@ -15,7 +15,7 @@ class BaseHandler
         //
     }
 
-    protected function broadcast(Server $server, $room_id = null, $message, $sender = null, $opcode = 1)
+    protected function broadcast(Server $server, $room_id, $message, $sender, $opcode = 1)
     {
         $server->task([
             'action' => 'broadcast',
@@ -63,7 +63,7 @@ class BaseHandler
         }
     }
 
-    protected function syncDiff($server, $fd)
+    protected function syncDiff(Server $server, $fd)
     {
         $note_id = uni_table('users')->get($fd)['room_id'];
         $diff = uni_table('diffs')->get($note_id);
@@ -72,5 +72,15 @@ class BaseHandler
             'message' => $diff['content']
         ];
         $server->push($fd, json_encode($diffResult));
+    }
+
+    protected function mergeDiffs(Server $server)
+    {
+        $server->task([
+            'action' => 'mergeDiffs',
+            'data' => [
+                'server' => $server
+            ]
+        ]);
     }
 }
