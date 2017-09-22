@@ -3,12 +3,14 @@
 namespace App\Exceptions;
 
 use Exception;
+use BadMethodCallException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Illuminate\Http\JsonResponse;
 
 class Handler extends ExceptionHandler
@@ -48,7 +50,15 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         // Default response of 400
-        $status = $e->getCode() ?: 400;
+        $isFatal = $e instanceof FatalThrowableError;
+        $isBadMethod = $e instanceof BadMethodCallException;
+        $status = 400;
+
+        if ($isFatal || $isBadMethod) {
+            $status = 500;
+        } else if (method_exists($e, 'getStatusCode')) {
+            $status = $e->getStatusCode();
+        }
         $message = $e->getMessage();
 
         if ($e instanceof ValidationException) {
