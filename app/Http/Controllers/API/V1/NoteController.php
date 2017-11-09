@@ -40,9 +40,9 @@ class NoteController extends Controller
     {
         $inputs = $request->intersect(['title', 'alias']);
         $note = Note::findOrFail($id);
-        if ($note->author_id !== auth()->id()) {
-            throw new AuthorizationException('Illegal Access');
-        }
+        $this->authorize('update', $note);
+        // https://laravel.com/docs/5.4/authorization#generating-policies
+        // dd(auth()->user()->can('update', $note));
         // update a note
         $note->update($inputs);
 
